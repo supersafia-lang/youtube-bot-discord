@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 import yt_dlp
 import asyncio
+import os
 
 # Bot setup
 intents = discord.Intents.default()
@@ -100,5 +101,4 @@ async def stop(ctx):
     ctx.voice_client.stop()
     await ctx.send("Stopped playing")
 
-# Replace with your bot token
-bot.run('MTQ0ODU3Mjc3MjI1ODQxODczMQ.G1cvdz.5DOx7ww4xZPWCA5CdjLj95lAdLVg8Btiqgipmg')
+bot.run(os.getenv('DISCORD_TOKEN'))
