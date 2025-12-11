@@ -10,13 +10,17 @@ intents.message_content = True
 intents.voice_states = True
 
 bot = commands.Bot(command_prefix='!', intents=intents)
-
+cookies = os.getenv('YOUTUBE_COOKIES')
+if cookies:
+    with open('cookies.txt', 'w', encoding='utf-8') as f:
+        f.write(cookies)
 # yt-dlp options (stream best audio only, no download)
 ytdl_format_options = {
     'format': 'bestaudio/best',
     'noplaylist': True,
     'quiet': True,
     'no_warnings': True,
+    'cookiefile': 'cookies.txt',  # this line is new
 }
 
 ffmpeg_options = {
@@ -100,5 +104,6 @@ async def stop(ctx):
         return await ctx.send("I'm not playing anything!")
     ctx.voice_client.stop()
     await ctx.send("Stopped playing")
+
 
 bot.run(os.getenv('DISCORD_TOKEN'))
