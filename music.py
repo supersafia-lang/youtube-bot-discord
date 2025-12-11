@@ -3,6 +3,9 @@ from discord.ext import commands
 import yt_dlp
 import asyncio
 import os
+import threading
+import http.server
+import socketserver
 
 # Bot setup
 intents = discord.Intents.default()
@@ -105,5 +108,19 @@ async def stop(ctx):
     ctx.voice_client.stop()
     await ctx.send("Stopped playing")
 
+class NoOpHandler(http.server.SimpleHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.end_headers()
+        self.wfile.write(b"OK")
+
+def start_server():
+    with socketserver.TCPServer(("", int(os.getenv("PORT", 10000))), NoOpHandler) as httpd:
+        print("Serving dummy HTTP on port", os.getenv("PORT", 10000))
+        httpd.serve_forever()
+
+# Start the dummy server in a background thread
+threading.Thread(target=start_server, daemon=True).start()
 
 bot.run(os.getenv('DISCORD_TOKEN'))
+
